@@ -10,10 +10,11 @@ import { useOnCellActiveAnimation } from "../hooks/useOnCellActiveAnimation";
 
 type ScaleProps = {
   activeScale?: number;
+  disActiveScale?: number;
   children: React.ReactNode;
 };
 
-export const ScaleDecorator = ({ activeScale = 1.1, children }: ScaleProps) => {
+export const ScaleDecorator = ({ activeScale = 1.1, disActiveScale = 1, children }: ScaleProps) => {
   const { isActive, onActiveAnim } = useOnCellActiveAnimation({
     animationConfig: { mass: 0.1, restDisplacementThreshold: 0.0001 },
   });
@@ -21,7 +22,9 @@ export const ScaleDecorator = ({ activeScale = 1.1, children }: ScaleProps) => {
 
   const style = useAnimatedStyle(() => {
     const animScale = interpolate(onActiveAnim.value, [0, 1], [1, activeScale]);
-    const scale = isActive ? animScale : 1;
+    const disAnimScale = interpolate(onActiveAnim.value, [1, 0], [disActiveScale, 1]);
+
+    const scale = isActive ? animScale : disAnimScale;
     return {
       transform: [{ scaleX: scale }, { scaleY: scale }],
     };
