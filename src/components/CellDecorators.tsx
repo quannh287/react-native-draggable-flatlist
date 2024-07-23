@@ -14,7 +14,11 @@ type ScaleProps = {
   children: React.ReactNode;
 };
 
-export const ScaleDecorator = ({ activeScale = 1.1, disActiveScale = 1, children }: ScaleProps) => {
+export const ScaleDecorator = ({
+  activeScale = 1.1,
+  disActiveScale = 0.98,
+  children,
+}: ScaleProps) => {
   const { isActive, onActiveAnim } = useOnCellActiveAnimation({
     animationConfig: { mass: 0.1, restDisplacementThreshold: 0.0001 },
   });
@@ -22,11 +26,15 @@ export const ScaleDecorator = ({ activeScale = 1.1, disActiveScale = 1, children
 
   const style = useAnimatedStyle(() => {
     const animScale = interpolate(onActiveAnim.value, [0, 1], [1, activeScale]);
-    const disAnimScale = interpolate(onActiveAnim.value, [1, 0], [disActiveScale, 1]);
+    const disAnimScale = interpolate(
+      onActiveAnim.value,
+      [0, 1],
+      [1, disActiveScale]
+    );
 
     const scale = isActive ? animScale : disAnimScale;
     return {
-      transform: [{ scaleX: scale }, { scaleY: scale }],
+      transform: [{ scale }],
     };
   }, [isActive]);
 
